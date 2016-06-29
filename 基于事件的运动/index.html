@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    div {
+        width: 100px;
+        height: 100px;
+        background: red;
+    }
+    </style>
+</head>
+<body>
+<button>按钮</button>
+    <div></div>
+    <script>
+        /**
+         *  b + c/d * t
+         *  b：起始位置
+         *  c: 距离
+         *  d：持续时间（多久完成）
+         *  t：已过时间
+         *
+         */
+        var div = document.getElementsByTagName('div')[0];
+        var btn = document.getElementsByTagName('button')[0];
+        var a = null;
+        btn.onclick = function (){
+            move(div, 'width', 400, 2000, 2, 30, function () {
+                move(div, 'height', 400, 2000, 3, 30, function () {
+                    move(div, 'marginLeft', 400, 2000, 3, 30);
+                });
+            });
+        };
+        /**
+         * [move description]
+         * @param  {[type]} obj  [要改变的元素]
+         * @param  {[type]} attr [元素的属性]
+         * @return {[type]} count  [总长度]
+         * @return {[type]} duration  [持续时间（多久完成）]
+         * @return {[type]} add  [每次添加长度]
+         * @return {[type]} addTime  [每次执行时间]
+         * @return {[type]} fn  [回调函数]
+         *
+         */
+        function move (obj, attr, count, duration, add, addTime, fn) {
+            clearInterval(a);
+            var b = parseFloat(getComputedStyle(obj)[attr]);
+            var c = count - b;
+            var d = duration;
+            var now = new Date().getTime();
+            a = setInterval(function (){
+                var t = new Date().getTime() - now;
+                console.log(t);
+                var value = b + c/d * t;
+                obj.style[attr] = value + add + 'px';
+                if(t >= d) {
+                    clearInterval(a);
+                    obj.style[attr] = count + 'px';
+                    // fn&&fn();
+                    if(fn){
+                        fn();
+                    }
+                }
+            }, addTime);
+        }
+    </script>
+</body>
+</html>
